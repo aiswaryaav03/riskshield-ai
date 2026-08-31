@@ -8,6 +8,8 @@ Instead of simply returning a `fraud` or `not fraud` result, the system gives a 
 
 The project was built to explore how machine learning can be used to support fraud and transaction-risk decisions in payment systems.
 
+---
+
 ## What Problem Does It Solve?
 
 Fraud detection is not only about catching fraudulent transactions.
@@ -23,11 +25,13 @@ RiskShield AI tries to balance these two cases by combining an XGBoost fraud cla
 
 The goal is not to automatically block a customer's payment, but to provide useful information that can support further review.
 
+---
 
 ## How RiskShield AI Works
 
 The application follows a simple pipeline:
 
+```text
 Transaction Data
        |
        v
@@ -52,10 +56,13 @@ Risk Signals
        |
        v
 React Dashboard
+```
 
 The model produces a probability of fraud. The application then uses the configured decision threshold and transaction characteristics to determine the displayed risk level and recommended action.
 
 RiskShield AI is designed as a **defense-oriented risk assessment prototype**. It does not automatically execute irreversible financial actions.
+
+---
 
 # Key Features
 
@@ -73,6 +80,7 @@ Users can enter transaction and behavioural information such as:
 - Distance from usual location
 - Transaction hour
 
+---
 
 ### 2. AI Risk Assessment
 
@@ -86,11 +94,15 @@ For each transaction, the dashboard displays:
 
 Example:
 
+```text
 Risk Score:          96.57%
 Risk Level:          HIGH
 Recommended Action:  MANUAL_REVIEW
 Model:               XGBoost
 Threshold:           65%
+```
+
+---
 
 ### 3. Explainable Risk Signals
 
@@ -111,6 +123,7 @@ These are presented as **risk signals** to make the result easier to understand.
 
 They should not be interpreted as direct model feature-importance values. A dedicated explainability technique such as SHAP would be required for that.
 
+---
 
 ### 4. Transaction History
 
@@ -118,6 +131,7 @@ The frontend keeps a session-level history of transactions analyzed during the c
 
 This allows users to quickly compare previously analyzed transactions and their risk results.
 
+---
 
 ### 5. Model Performance
 
@@ -130,13 +144,16 @@ The current results include:
 - Recall
 - F1 Score
 - Confusion matrix
-  
+
+---
+
 ### 6. Business Impact
 
 The application also provides an illustrative estimate of the cost associated with false positives and false negatives.
 
 This helps demonstrate why the choice of a fraud-detection threshold matters from a business perspective.
 
+---
 
 # Machine Learning
 
@@ -157,11 +174,13 @@ Because fraud is a minority class in the dataset, class imbalance was taken into
 
 The positive-class weight used during training was approximately **23.09**.
 
+---
 
 ## Features
 
 The model uses the following transaction and behavioural features:
 
+```text
 amount
 account_age_days
 transactions_last_10min
@@ -172,16 +191,18 @@ is_new_device
 is_new_location
 distance_from_usual_location
 hour
+```
 
 These features represent different aspects of transaction behaviour, including transaction value, frequency, account history, payment failures, device/location changes, and transaction timing.
 
+---
 
 # Dataset Split
 
 The dataset was divided into three parts:
 
 | Dataset | Transactions |
-
+|---|---:|
 | Training | 13,999 |
 | Validation | 3,001 |
 | Held-out Test | 3,000 |
@@ -190,6 +211,7 @@ The validation set was used to select the decision threshold.
 
 The final held-out test set was kept separate and was used only for final model evaluation.
 
+---
 
 # Model Performance
 
@@ -198,80 +220,98 @@ The final held-out test set was kept separate and was used only for final model 
 The final model was evaluated on 3,000 transactions that were not used for threshold selection.
 
 | Metric | Result |
-
+|---|---:|
 | ROC-AUC | **80.65%** |
 | Precision | **30.53%** |
 | Recall | **32.00%** |
 | F1 Score | **31.25%** |
 
-These results show that the model is able to identify some useful patterns in the synthetic dataset, although there is still significant room for improvement.
+The results show that the model can identify useful patterns in the synthetic dataset, although there is still significant room for improvement.
 
 The relatively low precision and recall are important limitations and are not hidden by the project.
+
+---
 
 ## Decision Threshold
 
 The decision threshold was selected using the validation set.
 
+```text
 Selected threshold: 65%
 Validation F1 Score: 34.48%
+```
 
 The threshold is configurable and separates higher-probability transactions from lower-risk cases.
 
 The application then maps the model output and transaction behaviour into a risk category and recommended action.
 
+---
 
 # Risk Decisions
 
 RiskShield AI uses three main risk categories:
 
+```text
 LOW RISK
     |
     v
 ALLOW
+```
 
+```text
 MEDIUM RISK
     |
     v
 REVIEW
+```
 
+```text
 HIGH RISK
     |
     v
 MANUAL_REVIEW
-
+```
 
 The recommended action is intended to support human decision-making rather than automatically making an irreversible payment decision.
+
+---
 
 # Business Impact Analysis
 
 On the final held-out test set, the model produced:
 
+```text
 False Positives: 91
 False Negatives: 85
+```
 
 For demonstration purposes, the project uses the following illustrative cost assumptions:
 
+```text
 False-positive cost: ₹200
 False-negative cost: ₹5,000
-
+```
 
 ### Estimated cost
 
+```text
 False-positive cost
 91 × ₹200
 = ₹18,200
+```
 
-
+```text
 False-negative cost
 85 × ₹5,000
 = ₹4,25,000
-
+```
 
 Therefore:
 
+```text
 Total estimated error cost
 = ₹4,43,200
-
+```
 
 These values are **illustrative estimates based on the synthetic test data and assumed costs**.
 
@@ -279,6 +319,7 @@ They are not actual Razorpay financial-loss figures.
 
 The purpose of this calculation is to demonstrate how the cost of missed fraud can be much higher than the cost of reviewing a legitimate transaction.
 
+---
 
 # Screenshots
 
@@ -288,6 +329,7 @@ The main dashboard provides an overview of analyzed transactions and their curre
 
 ![RiskShield AI Dashboard](docs/screenshots/riskshield_dashboard.png)
 
+---
 
 ## Normal Transaction
 
@@ -295,6 +337,7 @@ A normal transaction with low-risk behavioural characteristics is classified as 
 
 ![Normal Risk](docs/screenshots/normal_risk.png)
 
+---
 
 ## High-Risk Transaction
 
@@ -302,6 +345,7 @@ A transaction with multiple suspicious behavioural characteristics receives a hi
 
 ![High Risk](docs/screenshots/high_risk.png)
 
+---
 
 ## Risk Signal Analysis
 
@@ -309,6 +353,7 @@ RiskShield displays the behavioural indicators associated with the transaction t
 
 ![Risk Signal Analysis](docs/screenshots/risk_signal_analysis.png)
 
+---
 
 ## Model Performance
 
@@ -316,6 +361,7 @@ The dashboard presents the final held-out test results of the XGBoost model.
 
 ![Model Performance](docs/screenshots/model_performance.png)
 
+---
 
 ## Business Impact
 
@@ -323,6 +369,7 @@ The business impact section provides an illustrative estimate of the costs assoc
 
 ![Business Impact](docs/screenshots/business_impact.png)
 
+---
 
 ## Transaction History
 
@@ -330,13 +377,13 @@ The dashboard maintains a session-level history of transactions analyzed during 
 
 ![Transaction History](docs/screenshots/transaction_history.png)
 
-
 # Example Transactions
 
 ## Suspicious Transaction
 
 Example input:
 
+```json
 {
   "amount": 45000,
   "account_age_days": 5,
@@ -349,20 +396,25 @@ Example input:
   "distance_from_usual_location": 1200,
   "hour": 2
 }
+```
 
 Example result from the current model:
 
+```text
 Risk Score:          96.57%
 Risk Level:          HIGH
 Recommended Action:  MANUAL_REVIEW
+```
 
 The transaction contains several unusual characteristics, including a high transaction amount, high transaction frequency, multiple failed attempts, a new device, a new location, a large geographic distance, a recently created account, and an unusual transaction hour.
 
+---
 
 ## Normal Transaction
 
 Example input:
 
+```json
 {
   "amount": 500,
   "account_age_days": 500,
@@ -375,14 +427,17 @@ Example input:
   "distance_from_usual_location": 5,
   "hour": 14
 }
-
+```
 
 Example result from the current model:
 
+```text
 Risk Score:          2.67%
 Risk Level:          LOW
 Recommended Action:  ALLOW
+```
 
+---
 
 # Technology Stack
 
@@ -413,8 +468,11 @@ Recommended Action:  ALLOW
 - Git
 - GitHub
 
+---
+
 # Project Structure
 
+```text
 riskshield-ai/
 |
 ├── backend/
@@ -445,69 +503,77 @@ riskshield-ai/
 ├── docs/
 │   ├── architecture.png
 │   └── screenshots/
-│       ├── business_impact.png
-│       ├── high_risk.png
-│       ├── model_performance.png
-│       ├── normal_risk.png
-│       ├── risk_signal_analysis.png
-│       ├── riskshield_dashboard.png
-│       └── transaction_history.png
+│       ├── dashboard-normal.png
+│       ├── dashboard-high-risk.png
+│       ├── risk-analysis.png
+│       └── model-performance.png
 |
 ├── .gitignore
 └── README.md
+```
 
+---
 
 # Getting Started
 
 ## 1. Clone the Repository
 
+```bash
 git clone https://github.com/aiswaryaav03/riskshield-ai.git
 cd riskshield-ai
+```
 
+---
 
 # 2. Set Up the Machine Learning Environment
 
 Go to the ML directory:
 
-
+```bash
 cd ml
-
+```
 
 Install the required Python packages:
 
-
+```bash
 pip install pandas numpy scikit-learn xgboost joblib
-
+```
 
 Generate the synthetic dataset:
 
+```bash
 python generate_data.py
+```
 
 This creates:
 
-
+```text
 transactions.csv
-
+```
 
 The generated CSV is intentionally excluded from version control.
 
+---
 
 # 3. Train the Model
 
 From the `ml` directory:
 
-
+```bash
 python train.py
+```
 
 The training process produces:
 
+```text
 fraud_model.pkl
 threshold.txt
 features.txt
-
+```
 
 The trained model file is already included in the repository, so retraining is not required just to run the application.
 
+---
 
 # 4. Start the Backend
 
@@ -515,29 +581,35 @@ Open a new terminal.
 
 Navigate to the backend:
 
+```bash
 cd backend
+```
 
 Install the backend dependencies:
 
+```bash
 pip install -r requirements.txt
-
+```
 
 Start the FastAPI server:
 
-
+```bash
 uvicorn main:app --reload
-
+```
 
 The backend will normally run at:
 
+```text
 http://127.0.0.1:8000
-
+```
 
 Swagger API documentation is available at:
 
-
+```text
 http://127.0.0.1:8000/docs
+```
 
+---
 
 # 5. Start the Frontend
 
@@ -545,38 +617,43 @@ Open another terminal.
 
 Navigate to the frontend:
 
-
+```bash
 cd frontend
-
+```
 
 Install the Node dependencies:
 
-
+```bash
 npm install
-
+```
 
 Start the development server:
 
-
+```bash
 npm run dev
+```
 
 The frontend will normally be available at:
 
+```text
 http://localhost:5173
-
+```
 
 The frontend communicates with the FastAPI backend to analyze transactions.
 
+---
 
 # API Example
 
 RiskShield AI exposes a prediction endpoint:
 
+```text
 POST /predict
-
+```
 
 Example request:
 
+```json
 {
   "amount": 45000,
   "account_age_days": 5,
@@ -589,9 +666,11 @@ Example request:
   "distance_from_usual_location": 1200,
   "hour": 2
 }
+```
 
 Example response:
 
+```json
 {
   "risk_score": 96.57,
   "risk_level": "HIGH",
@@ -599,13 +678,17 @@ Example response:
   "model": "XGBoost",
   "threshold": 65
 }
+```
 
 The API also returns the risk signals detected for the transaction.
+
+---
 
 # Design Approach
 
 The main idea behind RiskShield AI is:
 
+```text
 Detection
     ↓
 Explanation
@@ -613,10 +696,13 @@ Explanation
 Decision Support
     ↓
 Auditability
+```
 
 A fraud prediction is more useful when the person reviewing the transaction can also understand the circumstances around the prediction.
 
 For that reason, the project combines the ML probability with readable behavioural risk signals and a recommended action.
+
+---
 
 # Limitations
 
@@ -630,10 +716,12 @@ The model was trained and evaluated using synthetic transaction data. Real payme
 
 The current held-out test results are:
 
+```text
 ROC-AUC:   80.65%
 Precision: 30.53%
 Recall:    32.00%
 F1 Score:  31.25%
+```
 
 These results are suitable for demonstrating the prototype, but they are not production-level fraud detection guarantees.
 
@@ -656,6 +744,7 @@ A real payment system would require additional work around:
 - Audit logging
 - Human review processes
 
+---
 
 # Future Improvements
 
@@ -672,12 +761,15 @@ Some possible next steps for the project are:
 - Add continuous model retraining
 - Deploy the system using production-grade infrastructure
 
+---
+
 # Project Goal
 
 RiskShield AI was built as an end-to-end demonstration of how a machine learning model can be connected to an actual application.
 
 The project covers the complete flow:
 
+```text
 Data Generation
       ↓
 Model Training
@@ -691,9 +783,11 @@ Risk Decision Layer
 React Frontend
       ↓
 Human-Readable Risk Assessment
+```
 
 The focus is on making the prediction useful to someone reviewing a transaction, rather than treating fraud detection as only a binary classification problem.
 
+---
 
 # Author
 
