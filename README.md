@@ -212,6 +212,24 @@ The dashboard displays the final held-out test metrics.
 
 The dashboard displays the estimated cost of false-positive and false-negative decisions.
 
+## Screenshots
+
+### Dashboard — Normal Transaction
+
+![Normal Transaction](docs/screenshots/normal_risk.png)
+
+### Dashboard — High-Risk Transaction
+
+![High-Risk Transaction](docs/screenshots/high_risk.png)
+
+### Risk Signal Analysis
+
+![Risk Signal Analysis](docs/screenshots/risk_signal_analysis.png)
+
+### Model Performance & Business Impact
+
+![Model Performance](docs/screenshots/model_performance.png/business_impact.png)
+
 ##  Technology Stack
 
 ### Machine Learning
